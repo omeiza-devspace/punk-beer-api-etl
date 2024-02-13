@@ -51,9 +51,9 @@ My design methodology is a test Driven approach across the entire development pr
    - Refactor approach for less coupling between components 
    - Dockerise application for a microservice-ready deployment
 
-![Database design](./db-design.png)
+![Database design](./app_design/db_design.png)
 
-![RESTful API design](./restful-api-design.png)
+![RESTful API design](./app_design/restful_api_design.png)
 
 ##Application Setup
 ### Prerequisites:
