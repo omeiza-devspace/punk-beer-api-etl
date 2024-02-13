@@ -42,9 +42,9 @@ My design methodology is a test Driven approach across the entire development pr
      - Processing the external API data in the model
      - Transform process
 
-![Database design](image.png)
+![Database design](./db-design.png)
 
-##A pplication Setup
+##Application Setup
 ### Prerequisites:
 1. Ensure you have [Composer](https://getcomposer.org/) installed.
 2. Install [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/).
