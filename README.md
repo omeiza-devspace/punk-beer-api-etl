@@ -54,7 +54,7 @@ My design methodology is a test Driven approach across the entire development pr
 
 #### 1. Clone the Repository:
 ```bash
-git clone https://github.com/yourusername/your-repo.git
+git clone https://github.com/omeiza-devspace/yps-fullstack-task.git
 ```
 
 #### 2. Install Dependencies:
