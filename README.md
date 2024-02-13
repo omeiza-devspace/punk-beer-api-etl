@@ -5,6 +5,8 @@
 
 The objective of this project is to develop a full-stack web application that seamlessly integrates Laravel (PHP) for the backend, MySQL for the database, and Vue.js for the frontend. The application will leverage the Punk Beer API to retrieve and display information about various beers, including their recommended food pairings. 
 
+https://punkapi.com/documentation/v2
+
 ## Database Design Approach
 
 The database design strategy selected is to utilize Laravel migrations, emphasizing a code-first approach. This entails defining the database structure through Laravel's migration which will generate the actual database schema. This approach aids in versioning the database management, facilitating seamless rollback processes when needed.
