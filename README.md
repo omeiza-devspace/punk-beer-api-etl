@@ -1,56 +1,111 @@
 
-## About the project
+# Fullstack Application using laravel an vue
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Project Overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The objective of this project is to develop a full-stack web application that seamlessly integrates Laravel (PHP) for the backend, MySQL for the database, and Vue.js for the frontend. The application will leverage the Punk Beer API to retrieve and display information about various beers, including their recommended food pairings. 
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Database Design Approach
 
-## Learning Laravel
+The database design strategy selected is to utilize Laravel migrations, emphasizing a code-first approach. This entails defining the database structure through Laravel's migration which will generate the actual database schema. This approach aids in versioning the database management, facilitating seamless rollback processes when needed.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Development Design Approach
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+My design methodology is a test Driven approach across the entire development process, from the Laravel backend to the front end, structured in a modular fashion. The process include:
 
-## Laravel Sponsors
+1. **Backend Development:**
+   - Laravel migrations for database schema setup
+   - Model creation and associated fmodel actory for generating test data
+   - Implementation of comprehensive tests to  ensure DB functionality
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+2. **Model Abstraction and Repository:**
+   - I implemented an abstract class for Model Repositories
+   - Development of based Model Repository by extending the abstract class for organized data access and extension of specific model repositories for uniques dataset access
+   - Implementation of a REST Controller to manage interactions with DB components throught the provied repository interfacces
 
-### Premium Partners
+3. **External Interface and Service Implementation:**
+   - Creatied an external interface to define integration signature for the external API
+   - The interface defines the Fetch, Transform, and Process interfaces for its implementation.
+   - Created a Concreted class to Implemente the interface to bridge the external interface with the REST controller application logic
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+4. **Asynchronous Processing and Caching:**
+   - Created Jobs and Queues for efficient handling of background tasks to enhanced system performance when reading large datasets. 
+   - Implementing caching using Laravel for search operations to improve application search experiences.
 
-## Contributing
+5. **Authentication and Validation Management:**
+   - Authentication was implemented using Laravel Sanctum to provide API tokens to the frontend client
+   - Data validation was extensively done during processing the external API data in the model, as well as in the transform process
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+6. **Exception and Validations:**
+   - Exceptions were thrown, and a global exception handler was defined to handle any unhandled errors
+   - Data validation was performed during:
+     - Processing the external API data in the model
+     - Transform process
 
-## Code of Conduct
+![Database design](image.png)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+##A pplication Setup
+### Prerequisites:
+1. Ensure you have [Composer](https://getcomposer.org/) installed.
+2. Install [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/).
+3. Set up a database and configure your `.env` file with database credentials.
 
-## Security Vulnerabilities
+### Step-by-Step Guide:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### 1. Clone the Repository:
+```bash
+git clone https://github.com/yourusername/your-repo.git
+```
 
-## License
+#### 2. Install Dependencies:
+```bash
+composer install
+npm install
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### 3. Configure Environment:
+```bash
+cp .env.example .env
+```
+
+#### 4. Generate Application Key:
+```bash
+php artisan key:generate
+```
+
+#### 5. Run Migrations and Seed Database:
+```bash
+php artisan migrate --seed
+```
+
+#### 6. Compile Assets:
+```bash
+npm run dev
+```
+For production:
+```bash
+npm run production
+```
+
+#### 7. Serve the Application:
+```bash
+php artisan serve
+```
+The application should now be accessible at `http://localhost:8000`.
+
+#### 8. Access the Vue SPA:
+If your Vue SPA runs separately:
+```bash
+npm run serve
+```
+
+
+update your .env file with
+APP_URL=http://localhost:port/ 
+SANCTUM_STATEFUL_DOMAINS=localhost:port
+SESSION_DOMAIN=localhost
+
+where port is the port number of choice
+
+Access the Vue SPA at `http://localhost:8080` (or the specified port).
+
