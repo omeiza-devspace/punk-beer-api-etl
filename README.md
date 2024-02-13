@@ -44,7 +44,16 @@ My design methodology is a test Driven approach across the entire development pr
      - Processing the external API data in the model
      - Transform process
 
+7. **TODOs:**
+   - Resolve errors between component parts   
+   - Improve User Interface design
+   - Extend test cases with local variables
+   - Refactor approach for less coupling between components 
+   - Dockerise application for a microservice-ready deployment
+
 ![Database design](./db-design.png)
+
+![RESTful API design](./restful-api-design.png)
 
 ##Application Setup
 ### Prerequisites:
@@ -110,4 +119,6 @@ SESSION_DOMAIN=localhost
 where port is the port number of choice
 
 Access the Vue SPA at `http://localhost:8080` (or the specified port).
+
+
 
