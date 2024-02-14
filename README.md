@@ -1,5 +1,5 @@
 
-# Fullstack Application using laravel an vue
+# Fullstack Application using laravel and vue
 
 ## Project Overview
 
@@ -55,7 +55,7 @@ My design methodology is a test Driven approach across the entire development pr
 
 ![RESTful API design](./app_design/restful_api_design.png)
 
-##Application Setup
+## Application Setup
 ### Prerequisites:
 1. Ensure you have [Composer](https://getcomposer.org/) installed.
 2. Install [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/).
