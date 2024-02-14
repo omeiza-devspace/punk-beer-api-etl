@@ -1,4 +1,3 @@
-import { createRouter, createWebHistory } from 'vue-router';
 import Login from '@/views/auth/Login.vue';
 import Register from '@/views/auth/Register.vue';
 
@@ -9,71 +8,30 @@ import PageNotFound from '@/views/basic/PageNotFound.vue';
 import ProductList from '@/views/product/ProductList.vue';
 import ProductDetails from '@/views/product/ProductDetails.vue';
 
-// import RouteList from '@/components/layout/RouteList.vue'; 
-import NavigationMenu from '@/components/layout/NavigationMenu.vue'; 
-import Footer from '@/components/layout/Footer.vue'; 
-
 const routes = [
+  { path: '/', component: DefaultPage, name: 'Home' },
+  { path: '/register', component: Register, name: 'Register' },
+  { path: '/login', component: Login, name: 'Login' },
   {
-    path: '/',
-    components: {
-      default: DefaultPage,
-      navigation: NavigationMenu,
-      footer: Footer,
-    },
-    children: [
-    //   {
-    //     path: '',
-    //     component: RouteList,
-    //   },
-    ],
-  },
-  {
-    path: '/user-login',
-    components: {
-      default: Login,
-      navigation: NavigationMenu,
-      footer: Footer,
-    },
-  },
-  {
-    path: '/user-register',
-    components: {
-      default: Register,
-      navigation: NavigationMenu,
-      footer: Footer,
-    },
-  },
-  {
-    path: '/user-dashboard',
-    components: {
-      default: Dashboard,
-      navigation: NavigationMenu,
-      footer: Footer,
-    },
-
+    path: '/dashboard',
+    component: Dashboard,
     meta: { requiresAuth: true },
+    name: 'Dashboard',
   },
-
   {
-    path: '/user-products',
+    path: '/product-list',
     component: ProductList,
-    name: 'productList',
+    meta: { requiresAuth: true },
+    name: 'Product List',
   },
   {
-    path: '/user-products/:id',
+    path: '/product-detail/:id',
     component: ProductDetails,
-    name: 'productDetails',
+    meta: { requiresAuth: true },
+    name: 'Product Details',
   },
-  
-  {
-    path: '/:catchAll(.*)*',
-    components:{
-        default: PageNotFound,
-        footer: Footer,
-    },
- },
-
+  { path: '/:pathMatch(.*)*', component: PageNotFound, name: 'Not Found' },
 ];
 
-export default routes;
+
+export default routes ;

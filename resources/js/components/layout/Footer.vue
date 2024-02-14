@@ -1,9 +1,9 @@
 <template>
-    <footer class="bg-gray-200 p-4 text-center fixed bottom-0 w-full footer">
-      <p class="text-sm text-gray-600">&copy; 2024. All rights reserved.</p>
-    </footer>
-  </template>
-  
+  <footer class="bg-light text-center p-3 footer">
+    <p>&copy; 2022 Your Company. All rights reserved.</p>
+  </footer>
+</template>
+
   <script>
   export default {
     name: 'Footer',

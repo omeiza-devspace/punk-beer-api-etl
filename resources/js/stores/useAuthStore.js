@@ -1,15 +1,14 @@
-import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import {useApiStore} from '@/stores/useApiStore';
 
-import Notification from '@/components/utils/Notification.vue';
-
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore({
+  id: 'auth',
   state: () => ({
     user: null,
-    showNotification: ref(false),
-    notificationMessage: ref(''),
-    notificationType: ref(''),
+    error: null,
+    showNotification: false,
+    notificationMessage: '',
+    notificationType: '',
   }),
 
   getters: {
@@ -23,37 +22,32 @@ export const useAuthStore = defineStore('auth', {
 
     async login(credentials) {
       try {
-        const response = await axios.post('/login', credentials);
+        const api = useApiStore();
+        const response = await api.post('/login', credentials);
         const { access_token, refresh_token } = response.data;
         localStorage.setItem('token', access_token);
         localStorage.setItem('refresh_token', refresh_token);
         await this.fetchUser();
-        this.showNotification = true;
-        this.notificationMessage = 'Login successful';
-        this.notificationType = 'success';
+        this.setNotification('Login successfully', 'success')
+
       } catch (error) {
-        console.error('Login error:', error);
-        this.showNotification = true;
-        this.notificationMessage = 'Login failed. Please check your credentials.';
-        this.notificationType = 'error';
+        const message = 'Login error:'
+        this.setNotification('Login failed. Please check your credentials.', false, error)
         throw error;
       }
     },
 
     async logout() {
       try {
-        await axios.post('/logout');
+        await api.post('/logout');
         localStorage.removeItem('token');
         localStorage.removeItem('refresh_token');
         this.setUser(null);
-        this.showNotification = true;
-        this.notificationMessage = 'Logout successful';
-        this.notificationType = 'success';
+        this.setNotification('Logout successfully', 'success')
+
       } catch (error) {
-        console.error('Logout error:', error);
-        this.showNotification = true;
-        this.notificationMessage = 'Logout failed.';
-        this.notificationType = 'error';
+        const message = 'Logout error:'
+        this.setNotification('Logout failed.', false, error)
         throw error;
       }
     },
@@ -65,52 +59,56 @@ export const useAuthStore = defineStore('auth', {
           throw new Error('No refresh token found');
         }
 
-        const response = await axios.post('/refresh', { refresh_token });
+        const api = useApiStore();
+        const response = await api.post('/refresh', { refresh_token });
         const { access_token } = response.data;
         localStorage.setItem('token', access_token);
-        this.showNotification = true;
-        this.notificationMessage = 'Token refreshed successfully';
-        this.notificationType = 'success';
+        const message = 'Token refreshed successfully'
+        this.setNotification(message, true)
+       
       } catch (error) {
-        console.error('Token refresh error:', error);
-        this.showNotification = true;
-        this.notificationMessage = 'Token refresh failed. Please log in again.';
-        this.notificationType = 'error';
-        throw error;
+        const message = "Token refresh failed. Please log in again.";
+        this.setNotification(message, false, error)
       }
     },
 
     async fetchUser() {
       try {
-        const response = await axios.post('/user');
+        const api = useApiStore();
+        const response = await api.post('/user');
         this.setUser(response.data);
       } catch (error) {
-        console.error('Error fetching user:', error);
-        this.showNotification = true;
-        this.notificationMessage = 'Error fetching user data.';
-        this.notificationType = 'error';
+        const message = "Error fetching user data.";
+        this.setNotification(message, false, error)
       }
     },
 
     async register(userData) {
       try {
-        await axios.post('/register', userData);
+        await api.post('/register', userData);
         this.showNotification = true;
         this.notificationMessage = 'Registration successful. You can now login.';
         this.notificationType = 'success';
       } catch (error) {
-        console.error('Registration error:', error);
-        this.showNotification = true;
-        this.notificationMessage = 'Registration failed.';
-        this.notificationType = 'error';
-        throw error;
+        const message = 'Registration error:'
+        this.setNotification(message, false, error)
+      
       }
+    },
+
+    setNotification(message,  isSuccess = true, error = null) {
+      this.clearNotification()
+      this.showNotification = true;
+      this.notificationMessage = message;
+      this.notificationType = isSuccess == true ?'success' : 'error';
+      this.error = error;
     },
 
     clearNotification() {
       this.showNotification = false;
       this.notificationMessage = '';
       this.notificationType = '';
+      this.error = null;
     },
   },
 });

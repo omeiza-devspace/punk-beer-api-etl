@@ -2,9 +2,9 @@
     <div v-if="isVisible" :class="['notification', type]">
       {{ message }}
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
   import { ref, onMounted } from 'vue';
   
   export default {
@@ -22,7 +22,7 @@
         isVisible.value = true;
         setTimeout(() => {
           isVisible.value = false;
-        }, 3000); // Hide the notification after 3 seconds
+        }, 5000); // Hide the notification after 3 seconds
       });
   
       return {
@@ -32,7 +32,7 @@
   };
   </script>
   
-  <style scoped>
+<style scoped>
   .notification {
     position: fixed;
     top: 20px;
@@ -54,5 +54,5 @@
   .error {
     background-color: #e74c3c;
   }
-  </style>
+</style>
   

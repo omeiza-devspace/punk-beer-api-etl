@@ -1,8 +1,7 @@
 import routes from './routes';
-import {
-    createRouter,
-    createWebHistory,
-  } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
+import { useAuth } from '@/stores/useAuthStore';
+
 
 
 const router = createRouter({
@@ -10,21 +9,23 @@ const router = createRouter({
     routes: routes,
 })
 
-// router.beforeEach((to, from, next) => {
-//   document.title = to.meta.title
-//   if (to.meta.middleware == "guest") {
-//       if (store.state.auth.authenticated) {
-//           next({ name: "dashboard" })
-//       }
-//       next()
-//   } else {
-//       if (store.state.auth.authenticated) {
-//           next()
-//       } else {
-//           next({ name: "login" })
-//       }
-//   }
-// })
+
+router.beforeEach((to, from, next) => {
+  const auth = useAuth();
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    // Check if the route requires authentication
+    if (auth.isAuthenticated) {
+      // User is authenticated, proceed to the route
+      next();
+    } else {
+      // User is not authenticated, redirect to login
+      next('/login');
+    }
+  } else {
+    // Route does not require authentication, proceed to the route
+    next();
+  }
+});
 
 export default router
 
