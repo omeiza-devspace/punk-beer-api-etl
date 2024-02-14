@@ -31,6 +31,7 @@ const routes = [
     name: 'Product Details',
   },
   { path: '/:pathMatch(.*)*', component: PageNotFound, name: 'Not Found' },
+  
 ];
 
 

@@ -1,11 +1,11 @@
 <template>
-  <div class="container mx-auto mt-8">
+  <div class="container mt-8">
     <div class="max-w-md mx-auto bg-white rounded-lg overflow-hidden md:max-w-xl">
 
       <!-- Product Name, Tagline, and Description -->
-      <div class="p-6">
-        <h2 class="text-xl font-semibold mb-2">{{ productStore.selectedProduct.name }}</h2>
-        <p class="text-gray-600">{{ productStore.selectedProduct.tagline }}</p>
+      <div class="p-4">
+        <h2 class="text-lg font-semibold mb-2">{{ productStore.selectedProduct.name }}</h2>
+        <p class="text-muted">{{ productStore.selectedProduct.tagline }}</p>
         <p class="text-gray-700 mt-4">{{ productStore.selectedProduct.description }}</p>
       </div>
 
@@ -13,9 +13,9 @@
       <img :src="productStore.selectedProduct.image_url" alt="Product Image" class="w-full object-cover">
 
       <!-- Display Ingredients -->
-      <div class="p-6">
+      <div class="p-4">
         <h3 class="text-lg font-semibold mb-2">Ingredients:</h3>
-        <ul class="list-disc pl-4">
+        <ul class="list-unstyled">
           <li v-for="malt in productStore.selectedProduct.ingredients.malt" :key="malt.name">
             {{ malt.amount.value }} {{ malt.amount.unit }} of {{ malt.name }}
           </li>
@@ -27,15 +27,15 @@
       </div>
 
       <!-- Display ABV, IBU, and Food Pairing -->
-      <div class="p-6 bg-gray-100">
+      <div class="p-4 bg-light">
         <p class="text-lg font-semibold">Details:</p>
-        <p><span class="font-semibold">ABV:</span> {{ productStore.selectedProduct.abv }}</p>
-        <p><span class="font-semibold">IBU:</span> {{ productStore.selectedProduct.ibu }}</p>
+        <p><span class="font-weight-bold">ABV:</span> {{ productStore.selectedProduct.abv }}</p>
+        <p><span class="font-weight-bold">IBU:</span> {{ productStore.selectedProduct.ibu }}</p>
 
         <!-- Food Pairing -->
         <div class="mt-4">
           <p class="text-lg font-semibold">Food Pairing:</p>
-          <ul class="list-disc pl-4">
+          <ul class="list-unstyled">
             <li v-for="pairing in productStore.selectedProduct.food_pairing" :key="pairing">
               {{ pairing }}
             </li>

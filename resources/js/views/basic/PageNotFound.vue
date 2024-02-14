@@ -1,5 +1,11 @@
+<template>
+  <div class="container mx-auto text-center text-danger">
+    <p class="mb-4">Page not found!</p>
+    <router-link @click="redirectToHome" class="btn btn-danger">Home</router-link>
+  </div>
+</template>
+
 <script setup>
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -9,13 +15,9 @@ const redirectToHome = () => {
 };
 </script>
 
-<template>
-  <div class="text-center text-red-500">
-    Page not found!
-    <router-link @click="redirectToHome">Home</router-link>
-  </div>
-</template>
-
 <style scoped>
 /* Add specific styles for this component */
+.container {
+  margin-top: 20px;
+}
 </style>

@@ -1,26 +1,28 @@
 <template>
-  <div class="container mx-auto">
-    <h1 class="text-3xl font-bold mb-4">Register</h1>
-    <form @submit.prevent="onSubmit" class="max-w-md mx-auto">
-      <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
-      <input v-model="name" type="text" id="name" required
-             class="mt-1 p-2 block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+  <div class="container mt-5">
+    <h1 class="text-center">Register</h1>
+    <form @submit.prevent="onSubmit" class="mx-auto mt-4" style="max-width: 400px">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name:</label>
+        <input v-model="name" type="text" id="name" required class="form-control">
+      </div>
 
-      <label for="email" class="block mt-4 text-sm font-medium text-gray-700">Email:</label>
-      <input v-model="email" type="email" id="email" required
-             class="mt-1 p-2 block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <input v-model="email" type="email" id="email" required class="form-control">
+      </div>
 
-      <label for="password" class="block mt-4 text-sm font-medium text-gray-700">Password:</label>
-      <input v-model="password" type="password" id="password" required
-             class="mt-1 p-2 block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+      <div class="mb-3">
+        <label for="password" class="form-label">Password:</label>
+        <input v-model="password" type="password" id="password" required class="form-control">
+      </div>
 
-      <label for="confirmPassword" class="block mt-4 text-sm font-medium text-gray-700">Confirm Password:</label>
-      <input v-model="confirmPassword" type="password" id="confirmPassword" required
-             class="mt-1 p-2 block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+      <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Confirm Password:</label>
+        <input v-model="confirmPassword" type="password" id="confirmPassword" required class="form-control">
+      </div>
 
-      <button type="submit" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-        Register
-      </button>
+      <button type="submit" class="btn btn-primary mt-3 w-100">Register</button>
     </form>
 
     <Notification
@@ -31,75 +33,55 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 import { useAuthStore } from '@/stores/useAuthStore';
 import Notification from '@/components/utils/Notification.vue';
 import { useRouter } from 'vue-router';
 
-export default {
-  name: 'Register',
-  components: {
-    Notification,
-  },
-  setup() {
-    const authStore = useAuthStore();
-    const router = useRouter();
-    const name = ref('');
-    const email = ref('');
-    const password = ref('');
-    const confirmPassword = ref('');
+const authStore = useAuthStore();
+const router = useRouter();
 
-    const onSubmit = async () => {
-      try {
-        // Basic password confirmation check
-        if (password.value !== confirmPassword.value) {
-          throw new Error('Passwords do not match');
-        }
+const { register, setNotification } = authStore;
 
-        await auth.register({
-          name: name.value,
-          email: email.value,
-          password: password.value,
-        });
+const name = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
 
-        // Optionally, you can redirect the user to the login page after successful registration
-        router.push('/login');
-      } catch (error) {
-        // Handle registration error
-        if (error.response) {
-          // Server responded with a status code outside of the range 2xx
-          authStore.showNotification = true;
-          authStore.notificationMessage = error.response.data.message || 'Registration failed.';
-          authStore.notificationType = 'error';
-        } else if (error.message === 'Passwords do not match') {
-          // Password confirmation error
-          authStore.showNotification = true;
-          authStore.notificationMessage = 'Passwords do not match';
-          authStore.notificationType = 'error';
-        } else {
-          // Other unexpected errors
-          authStore.showNotification = true;
-          authStore.notificationMessage = 'An unexpected error occurred. Please try again later.';
-          authStore.notificationType = 'error';
-        }
-      }
-    };
+const onSubmit = async () => {
+  try {
+    // Basic password confirmation check
+    if (password.value !== confirmPassword.value) {
+      throw new Error('Passwords do not match');
+    }
 
-    return {
-      authStore,
-      name,
-      email,
-      password,
-      confirmPassword,
-      onSubmit,
-    };
-  },
+    await register({
+      name: name.value,
+      email: email.value,
+      password: password.value,
+    });
+
+    // Optionally, you can redirect the user to the login page after successful registration
+    router.push('/login');
+  } catch (error) {
+    // Handle registration error
+    if (error.response) {
+      // Server responded with a status code outside of the range 2xx
+      setNotification(error.response.data.message || 'Registration failed.', false, error);
+    } else if (error.message === 'Passwords do not match') {
+      // Password confirmation error
+      setNotification('Passwords do not match', false);
+    } else {
+      // Other unexpected errors
+      setNotification('An unexpected error occurred. Please try again later.', false, error);
+    }
+  }
 };
 </script>
 
 <style scoped>
-/* Add specific styles for this component */
+/* Add specific styles for this component if needed */
 .form {
   margin-top: 20px;
 }

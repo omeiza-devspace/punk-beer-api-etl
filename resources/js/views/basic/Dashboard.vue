@@ -1,10 +1,10 @@
 <template>
   <div class="container mx-auto">
-    <h1 class="text-3xl font-bold mb-4">Welcome to the Dashboard</h1>
+    <h1 class="text-3xl font-weight-bold mb-4">Welcome to the Dashboard</h1>
     <p class="mb-4">This is the dashboard for authenticated users. Add your content here.</p>
 
-    <div class="metric mt-8">
-      <h2 class="text-xl font-semibold">Example Metric</h2>
+    <div class="metric mt-8 p-4 border rounded">
+      <h2 class="text-lg font-weight-bold">Example Metric</h2>
       <p class="mt-2">Counter: {{ counter }}</p>
     </div>
   </div>
@@ -38,7 +38,7 @@ export default {
 </script>
 
 <style scoped>
-/* Add specific styles for this component */
+/* Add your component-specific styles here */
 .container {
   text-align: center;
   margin-top: 20px;
