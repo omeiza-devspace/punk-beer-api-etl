@@ -80,8 +80,6 @@ class BeerController extends Controller
         }
     }
 
-  
-
     public function getPunkbeerAPIData(Request $request)
     {
         try {
@@ -100,9 +98,6 @@ class BeerController extends Controller
             return $this->coreResponse('Failed to fetch external data', null, 500, false);
         }
     }
-
-
-   
 
     public function getWithLimitAndOffset($limit = 10, $offset = 0, $perPage)
     {
