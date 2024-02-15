@@ -28,7 +28,7 @@ class PunkbeerDataService implements DataServiceInterface
                 throw new \Exception('Failed to fetch data from the API');
             } 
 
-            return $response;
+            return $response->json();
             
         } catch (\Exception $e) {
 
@@ -39,6 +39,7 @@ class PunkbeerDataService implements DataServiceInterface
     public function transformData($modelData)
     {
         try {
+            //transform data to array
            return $this->beertransformer($modelData);
         } catch (\Exception $e) {
             throw new \Exception('Failed to transform data from the API');

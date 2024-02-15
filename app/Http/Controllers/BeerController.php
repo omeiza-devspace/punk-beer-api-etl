@@ -84,15 +84,13 @@ class BeerController extends Controller
 
     public function getPunkbeerAPIData(Request $request)
     {
-                // php artisan queue:work
-
         try {
             $apiUrl = Config::get('api-punkbeer.apiUrl');
 
             // Check if data is already cached
             $cachedData = Cache::remember('punkbeer_api_data', 60, function () use ($apiUrl) {
                 $jsonData = $this->punkbeerDataService->getData($apiUrl);
-                $transformedData = $this->getPunkbeerData->transformData($jsonData);
+                $transformedData = $this->punkbeerDataService->transformData($jsonData);
                 return $this->punkbeerDataService->processData($transformedData);
             });
 

@@ -23,32 +23,32 @@ class ProcessBeerData implements ShouldQueue
     public function handle(BeerRepository $beerRepository)
     {
         try {
-
+ 
             DB::beginTransaction();
-
-            foreach ($modelData as $beerData) {
-                ProcessBeerDataJob::dispatch($beerData);
-            }
+            
             
             $transformedData = BeerTransformer::jsonToArray($this->jsonData);
 
-            // Insert or retrieve units and ingredient types
-            $unitIds = $beerRepository->insertOrUpdateUnits($transformedData['units']);
-            $ingredientTypeIds = $beerRepository->insertOrUpdateIngredientTypes($transformedData['ingredient_types']);
+            foreach ($modelData as $transformedData) {
 
-            // Insert the transformed beer data into the database
-            $beerData = $transformedData['beer'];
-            $beerData['unit_id'] = $unitIds[$beerData['unit']];
-            $beerData['ingredient_type_id'] = $ingredientTypeIds[$beerData['ingredient_type']];
-            $beerId = $beerRepository->createBeer($beerData);
+                // Insert or retrieve units and ingredient types
+                $unitIds = $beerRepository->insertOrUpdateUnits($transformedData['units']);
+                $ingredientTypeIds = $beerRepository->insertOrUpdateIngredientTypes($transformedData['ingredient_types']);
 
-            // Associate ingredients with the created beer
-            foreach ($transformedData['ingredients'] as $ingredient) {
-                $ingredient['unit_id'] = $unitIds[$ingredient['unit']];
-                $ingredient['ingredient_type_id'] = $ingredientTypeIds[$ingredient['ingredient_type']];
-                $beerRepository->associateIngredient($beerId, $ingredient);
+                // Insert the transformed beer data into the database
+                $beerData = $transformedData['beer'];
+                $beerData['unit_id'] = $unitIds[$beerData['unit']];
+                $beerData['ingredient_type_id'] = $ingredientTypeIds[$beerData['ingredient_type']];
+                $beerId = $beerRepository->createBeer($beerData);
+
+                // Associate ingredients with the created beer
+                foreach ($transformedData['ingredients'] as $ingredient) {
+                    $ingredient['unit_id'] = $unitIds[$ingredient['unit']];
+                    $ingredient['ingredient_type_id'] = $ingredientTypeIds[$ingredient['ingredient_type']];
+                    $beerRepository->associateIngredient($beerId, $ingredient);
+                }
             }
-
+            
             DB::commit();
 
             return true;
