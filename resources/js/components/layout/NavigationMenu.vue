@@ -2,7 +2,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <router-link class="navbar-brand" :to="{ path: '/' }">{{appName}}</router-link>
+      <router-link class="navbar-brand" :to="{ path: '/' }">{{ appName }}</router-link>
       <button
         class="navbar-toggler"
         type="button"
@@ -15,35 +15,34 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li v-for="route in routes" :key="route.path" class="nav-item">
-            <router-link class="nav-link" :to="route.path">{{ route.name }}</router-link>
-          </li>
-        </ul>
+        <RouteList :routes="filteredRoutes"/>
       </div>
     </div>
   </nav>
 </template>
 
-<script>
-import { computed, ref, onMounted } from 'vue';
+<script setup>
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import RouteList from '@/components/layout/RouteList.vue';
+import { useAuth } from '@/stores/useAuthStore';
 
-export default {
-  setup() {
-    const router = useRouter();
+const appName = ref("Punk Beer");
+const router = useRouter();
+const auth = useAuth();
+const routes = computed(() => router.getRoutes());
+const filteredRoutes = computed(() => {
+  return auth.isAuthenticated
+    ? routes.value.filter(route => route.meta.middleware === 'auth')
+    : routes.value.filter(route => route.meta.middleware === 'guest');
+});
 
-    const routes = ref([]);
-    const appName = ref("Punk Beer")
-
-    onMounted(() => {
-      routes.value = router.getRoutes().filter(route => route.path !== '/');
-    });
-
-    return {
-      routes: computed(() => routes.value),
-      appName
-    };
-  },
-};
+onMounted(() => {
+  // Additional setup if needed
+});
 </script>
+
+<style scoped>
+/* Add specific styles for this component */
+/* You can customize Bootstrap styling here if needed */
+</style>

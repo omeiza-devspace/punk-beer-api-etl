@@ -1,25 +1,24 @@
 <template>
     <div>
-      <h2>Routes List</h2>
-      <ul>
-        <li v-for="route in routes" :key="route.path">
-          {{ route.path }}
-        </li>
-      </ul>
+      <ul class="navbar-nav">
+          <li v-for="route in routes" :key="route.path" class="nav-item">
+            <router-link class="nav-link" :to="route.path">
+              {{ route.name }}
+            </router-link>
+          </li>
+        </ul>
     </div>
   </template>
   
-  <script>
-  import { routes } from '@/router/routes'; 
-  
-  export default {
-    name: 'RouteList',
-    setup() {
-      return {
-        routes,
-      };
-    },
-  };
+  <script setup>
+
+  defineProps( {
+    routes: {
+      type: Array,
+      required: true
+    }
+  })
+    
   </script>
   
   <style scoped>

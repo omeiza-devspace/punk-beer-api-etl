@@ -1,6 +1,6 @@
 <template>
   <footer class="bg-light text-center p-3 footer">
-    <p>&copy; 2022 Your Company. All rights reserved.</p>
+    <p>&copy; 2024 Your Company. All rights reserved.</p>
   </footer>
 </template>
 

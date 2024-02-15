@@ -22,14 +22,10 @@
         <input v-model="confirmPassword" type="password" id="confirmPassword" required class="form-control">
       </div>
 
-      <button type="submit" class="btn btn-primary mt-3 w-100">Register</button>
+      <button type="submit" class="btn btn-primary mt-3 w-100" :disabled="isLoading">Register</button>
     </form>
 
-    <Notification
-      v-if="authStore.showNotification"
-      :message="authStore.notificationMessage"
-      :type="authStore.notificationType"
-    />
+    <Notification />
   </div>
 </template>
 
@@ -38,11 +34,12 @@ import { ref } from 'vue';
 import { useAuthStore } from '@/stores/useAuthStore';
 import Notification from '@/components/utils/Notification.vue';
 import { useRouter } from 'vue-router';
+import { useNotification } from '@/helpers/useNotification.js';
 
 const authStore = useAuthStore();
 const router = useRouter();
-
 const { register, setNotification } = authStore;
+const { isLoading, setLoading } = useNotification();
 
 const name = ref('');
 const email = ref('');
@@ -51,6 +48,7 @@ const confirmPassword = ref('');
 
 const onSubmit = async () => {
   try {
+    setLoading(true);
     // Basic password confirmation check
     if (password.value !== confirmPassword.value) {
       throw new Error('Passwords do not match');
@@ -76,6 +74,8 @@ const onSubmit = async () => {
       // Other unexpected errors
       setNotification('An unexpected error occurred. Please try again later.', false, error);
     }
+  } finally {
+    setLoading(false);
   }
 };
 </script>

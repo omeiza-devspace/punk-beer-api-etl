@@ -12,9 +12,10 @@
         <input v-model="password" type="password" id="password" required class="form-control">
       </div>
 
-      <button type="submit" class="btn btn-primary mt-3 w-100">Login</button>
+      <button type="submit" class="btn btn-primary mt-3 w-100" :disabled="isLoading">Login</button>
     </form>
 
+    <Notification />
   </div>
 </template>
 
@@ -22,23 +23,28 @@
 import { ref } from 'vue';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useRouter } from 'vue-router';
+import Notification from '@/components/utils/Notification.vue';
+import { useNotification } from '@/helpers/useNotification.js';
 
 const authStore = useAuthStore();
 const router = useRouter();
-
 const { login, setNotification } = authStore;
+const { isLoading, setLoading } = useNotification();
 
 const email = ref('');
 const password = ref('');
 
 const onSubmit = async () => {
   try {
+    setLoading(true);
     await login({ email: email.value, password: password.value });
     // Redirect to the dashboard upon successful login
     router.push('/dashboard');
   } catch (error) {
     // Handle login error
     setNotification(error.message, false);
+  } finally {
+    setLoading(false);
   }
 };
 </script>

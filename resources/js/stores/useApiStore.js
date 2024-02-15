@@ -13,8 +13,7 @@ export const useApiStore = defineStore({
       get,
       post,
       put,
-      delete: del,
+      del, 
     };
   },
 });
-
