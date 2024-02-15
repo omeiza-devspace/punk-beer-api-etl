@@ -2,29 +2,27 @@
 
 namespace App\Jobs;
 
-use App\Models\Beer;
-use App\Models\Unit;
-use App\Models\IngredientType;
-use App\Transformers\PunkbeerTransformer
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class PunkbeerDataJob implements ShouldQueue
+class TransformBeerChunkToModel implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $beerData;
+    public $beerChunk;
 
-    public function __construct($beerData)
+    public function __construct($beerChunk)
     {
-        $this->beerData = $beerData;
+        $this->beerChunk = $beerChunk;
     }
 
     public function handle()
     {
-        PunkbeerTransformer::transformJsonToModels($this->beerData);
+        foreach ($this->beerChunk as $beerData) {
+            dispatch(new PunkbeerDataJob($beerData));
+        }
     }
 }

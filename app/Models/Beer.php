@@ -19,10 +19,13 @@ class Beer extends Model
         'food_pairing_id' => 'integer',
     ];
 
-    public function foodPairing()
-    {
-        return $this->hasOne(FoodPairing::class);
-    }
+    protected $fillable = [
+        'name', 'tagline', 'description', 'abv', 'ibu', 'food_pairing', 'image_url'
+    ];
+
+    protected $casts = [
+        'food_pairing' => 'json',
+    ];
 
     public function ingredients()
     {

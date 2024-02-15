@@ -44,6 +44,7 @@ return new class extends Migration
             $table->string('name');
             $table->float('amount_value');
             $table->foreignId('unit_id')->constrained('units');
+            $table->string('attribute')->nullable();
             $table->timestamps();
         });
   

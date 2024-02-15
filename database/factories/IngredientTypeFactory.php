@@ -1,17 +1,17 @@
 <?php 
 namespace Database\Factories;
 
-use App\Models\FoodPairing;
+use App\Models\IngredientType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class FoodPairingFactory extends Factory
+class IngredientTypeFactory extends Factory
 {
-    protected $model = FoodPairing::class;
+    protected $model = IngredientType::class;
 
     public function definition()
     {
         return [
-            'pairing' => $this->faker->paragraph,
+            'name' => $this->faker->word,
         ];
     }
 }

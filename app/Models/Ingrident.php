@@ -12,28 +12,25 @@ class Ingredient extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 
-        'amount_value',
-        'amount_unit_id',
-        'add', 
-        'attribute',
-        'beer_id'
+        'name', 'amount', 'add', 'attribute'
     ];
 
     protected $casts = [
-        'id' => 'integer',
-        'amount_value' => 'float',
-        'amount_unit_id' => 'integer',
-        'beer_id' => 'integer',
+        'amount' => 'decimal:2',
     ];
-
-    public function unit()
-    {
-        return $this->belongsTo(Unit::class, 'amount_unit_id');
-    }
 
     public function beer()
     {
         return $this->belongsTo(Beer::class);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
+
+    public function ingredientType()
+    {
+        return $this->belongsTo(IngredientType::class);
     }
 }

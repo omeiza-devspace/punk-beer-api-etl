@@ -36,11 +36,11 @@ class PunkbeerDataService implements DataServiceInterface
         }
     }
 
-    public function transformData($modelData)
+    public function transformData($jsonModelData)
     {
         try {
-            //transform data to array
-           return $this->beertransformer($modelData);
+            //clean data here
+           return $jsonModelData
         } catch (\Exception $e) {
             throw new \Exception('Failed to transform data from the API');
         }
@@ -50,7 +50,13 @@ class PunkbeerDataService implements DataServiceInterface
     {
         try {
             // Dispatch the job for background processing
-            PunkbeerDataJob::dispatch($modelData);
+             // Chunk the data into smaller arrays (e.g., chunks of 10 records)
+             $chunks = array_chunk($modelData, 10);
+
+            // Dispatch a job for each chunk
+            foreach ($chunks as $chunk) {
+                dispatch(new PunkbeerDataJob($chunk));
+            }
             return true;
         } catch (\Throwable $th) {
             throw $th;
