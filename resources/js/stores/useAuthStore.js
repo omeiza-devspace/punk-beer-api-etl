@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { useApiStore } from '@/stores/useApiStore';
+import { api } from '@/helpers/api';
 
 export const useAuthStore = defineStore({
   id: 'auth',
@@ -13,7 +13,6 @@ export const useAuthStore = defineStore({
 
   actions: {
     async login(credentials) {
-      const api = useApiStore();
 
       try {
         const response = await api.post('/login', credentials);
@@ -27,10 +26,9 @@ export const useAuthStore = defineStore({
     },
 
     async logout() {
-      const api = useApiStore();
 
       try {
-        await api.post('/logout');
+        await api.post('/api/logout');
         localStorage.removeItem('token');
         localStorage.removeItem('refresh_token');
         this.setUser(null);
@@ -45,11 +43,10 @@ export const useAuthStore = defineStore({
         throw new Error('No refresh token found');
       }
 
-      const api = useApiStore();
 
       try {
         setLoading(true); 
-        const response = await api.post('/refresh', { refresh_token });
+        const response = await api.post('/api/refresh', { refresh_token });
         const { access_token } = response.data;
         localStorage.setItem('token', access_token);
       } catch (error) {
@@ -58,10 +55,9 @@ export const useAuthStore = defineStore({
     },
 
     async fetchUser() {
-      const api = useApiStore();
 
       try {
-        const response = await api.post('/user');
+        const response = await api.post('/api/user');
         this.setUser(response.data);
       } catch (error) {
         throw new Error('No refresh token found', error);
@@ -69,14 +65,15 @@ export const useAuthStore = defineStore({
     },
 
     async register(userData) {
-      const { showNotification,  clearNotification} = useNotification();
-      const api = useApiStore();
 
       try {
-        await api.post('/register', userData); 
+        const response = await api.post('/api/register', userData); 
+        console.log(response.data);
       } catch (error) {
-        showNotification('Registration error:', false, error);
-        throw new Error('Registration failed. Please try again', error);
+       const {message} = error
+       return message
+        
+
       }
     },
   },

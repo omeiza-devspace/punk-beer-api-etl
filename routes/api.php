@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeerController;
 
 /*
@@ -27,7 +27,7 @@ Route::post('/user', [AuthController::class, 'user'])->middleware('auth:sanctum'
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 
-Route::prefix('beers')->group(function () {
+Route::middleware('auth:sanctum')prefix('beers')->group(function () {
     Route::get('/', [BeerController::class, 'index'])->name('beers.index');
     Route::get('{id}', [BeerController::class, 'show'])->name('beers.show');
     Route::get('properties', [BeerController::class, 'getAllProperties'])->name('beers.properties');

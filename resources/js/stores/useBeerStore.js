@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
-import { useApiStore } from '@/stores/useApiStore';
-import { useNotification } from '@/helpers/useNotification.js';
+import { api } from '@/helpers/api';
 
 export const useBeerStore = defineStore({
   id: 'beer',
@@ -15,7 +14,6 @@ export const useBeerStore = defineStore({
 
   actions: {
     async fetchPaginatedBeers() {
-      const api = useApiStore();
 
       try {
         const response = await api.get(`/beers/search-limit-and-offset?page=${this.currentPage}`);
@@ -28,7 +26,6 @@ export const useBeerStore = defineStore({
     },
 
     async searchBeerByName(name) {
-      const api = useApiStore();
 
       try {
         const response = await api.get(`/beers/search-name/${name}`);
@@ -41,7 +38,6 @@ export const useBeerStore = defineStore({
     },
 
     async searchBeerById(id) {
-      const api = useApiStore();
 
       try {
         const response = await api.get(`/beers/search-id/${id}`);
@@ -53,7 +49,6 @@ export const useBeerStore = defineStore({
     },
 
     async fetchAllBeers() {
-      const api = useApiStore();
 
       try {
         const response = await api.get('/beers');
@@ -66,7 +61,6 @@ export const useBeerStore = defineStore({
     },
 
     async fetchBeerProperties() {
-      const api = useApiStore();
 
       try {
         const response = await api.get('/beers/properties');
@@ -78,7 +72,6 @@ export const useBeerStore = defineStore({
     },
 
     async fetchExternalData() {
-      const api = useApiStore();
 
       try {
         const response = await api.get('/beers/get-external-data');
@@ -90,7 +83,6 @@ export const useBeerStore = defineStore({
     },
 
     async fetchPaginatedData(query, perPage) {
-      const api = useApiStore();
 
       try {
         const response = await api.get(`/beers/search-paginated-data?query=${query}&perPage=${perPage}`);
