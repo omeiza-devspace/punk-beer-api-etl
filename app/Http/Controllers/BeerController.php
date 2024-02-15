@@ -6,6 +6,8 @@ use App\Repositories\BeerRepository;
 use App\Traits\APIResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
+use Exception;
 
 class BeerController extends Controller
 {
@@ -20,69 +22,59 @@ class BeerController extends Controller
 
     public function index()
     {
-        try {
+        return $this->handleRequest(function () {
             $beers = $this->beerRepository->getAll();
             return $this->successResponse('Beers retrieved successfully', $beers);
-        } catch (\Exception $e) {
-            return $this->coreResponse('An error occurred while retrieving Beers', null, 500, false);
-        }
+        });
     }
 
     public function show($id)
     {
-        try {
+        return $this->handleRequest(function () use ($id) {
             $beer = $this->beerRepository->getById($id);
             return $this->successResponse('Beer retrieved successfully', $beer);
-        } catch (\Exception $e) {
-            return $this->coreResponse('An error occurred while retrieving Beer', null, 500, false);
-        }
+        });
     }
 
     public function getAllProperties()
     {
-        try {
-            // Attempt to retrieve beers from the cache
+        return $this->handleRequest(function () {
+            // Retrieve beers from the cache or repository
             $beers = Cache::remember('all_beers', 60, function () {
-                // Cache key 'all_beers' will be stored for 60 minutes (adjust as needed)
                 return $this->beerRepository->getAllProperties();
             });
 
             return $this->successResponse('Beers retrieved successfully', $beers);
-        } catch (Exception $e) {
-            return $this->coreResponse('Failed to retrieve beers', null, 500, false);
-        }
+        });
     }
 
     public function getBeerById($id)
     {
-        try {
+        return $this->handleRequest(function () use ($id) {
+            // Retrieve beer from the cache or repository
             $beer = Cache::remember("beer_{$id}", 60, function () use ($id) {
                 return $this->beerRepository->getBeerById($id);
             });
 
-            return $beer;
-        } catch (Exception $e) {
-            return $this->coreResponse('Failed to retrieve beer', null, 500, false);
-        }
+            return $this->successResponse('Beer retrieved successfully', $beer);
+        });
     }
-
 
     public function getBeerByName($name)
     {
-        try {
+        return $this->handleRequest(function () use ($name) {
+            // Retrieve beer from the cache or repository
             $beer = Cache::remember("beer_name_{$name}", 60, function () use ($name) {
                 return $this->beerRepository->getBeerByName($name);
             });
-    
-            return $beer;
-        } catch (Exception $e) {
-            return $this->coreResponse('Failed to retrieve beer', null, 500, false);
-        }
+
+            return $this->successResponse('Beer retrieved successfully', $beer);
+        });
     }
 
     public function getPunkbeerAPIData(Request $request)
     {
-        try {
+        return $this->handleRequest(function () {
             $apiUrl = Config::get('api-punkbeer.apiUrl');
 
             // Check if data is already cached
@@ -92,47 +84,46 @@ class BeerController extends Controller
                 return $this->punkbeerDataService->processData($transformedData);
             });
 
-            return response()->json(['data' => $cachedData, 'message' => 'Data retrieved successfully'], 200);
-
-        } catch (\Exception $e) {
-            return $this->coreResponse('Failed to fetch external data', null, 500, false);
-        }
+            return $this->successResponse('Data retrieved successfully', ['data' => $cachedData]);
+        });
     }
 
     public function getWithLimitAndOffset($limit = 10, $offset = 0, $perPage)
     {
-        try {
+        return $this->handleRequest(function () use ($limit, $offset, $perPage) {
             // Create a unique cache key based on parameters
             $cacheKey = "beer_with_limit_offset_{$limit}_{$offset}_{$perPage}";
 
-            // Check if data is already cached
+            // Retrieve data from the cache or repository
             $cachedData = Cache::remember($cacheKey, 60, function () use ($limit, $offset, $perPage) {
                 return $this->beerRepository->getWithLimitAndOffset($limit, $offset, $perPage);
             });
 
-            return $cachedData;
-
-        } catch (\Throwable $th) {
-            return $this->coreResponse('Failed to retrieve beer', null, 500, false);
-        }
+            return $this->successResponse('Data retrieved successfully', $cachedData);
+        });
     }
 
     public function getPaginatedData($query, $perPage = 10)
     {
-        try {
+        return $this->handleRequest(function () use ($query, $perPage) {
             // Create a unique cache key based on parameters
             $cacheKey = "beer_paginated_data_{$query}_{$perPage}";
 
-            // Check if data is already cached
+            // Retrieve data from the cache or repository
             $cachedData = Cache::remember($cacheKey, 60, function () use ($query, $perPage) {
                 return $this->beerRepository->getPaginatedData($query, $perPage);
             });
 
-            return $cachedData;
+            return $this->successResponse('Data retrieved successfully', $cachedData);
+        });
+    }
 
-        } catch (\Throwable $th) {
-            return $this->coreResponse('Failed to retrieve beer', null, 500, false);
+    protected function handleRequest($callback)
+    {
+        try {
+            return $callback();
+        } catch (\Exception $e) {
+            return $this->coreResponse('An error occurred', null, 500, false);
         }
     }
-   
 }
