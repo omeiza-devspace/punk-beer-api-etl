@@ -2,34 +2,43 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\User;
+use App\Traits\APIResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    use APIResponse;
+
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('authToken')->plainTextToken;
+        $credentials = $request->only('email', 'password');
 
-            return response()->json(['token' => $token]);
+        if (Auth::attempt($credentials)) {
+            $token = $request->user()->createToken('authToken')->plainTextToken;
+
+            $data = ['token' => $token];
+            return $this->successResponse('Logged in successfully', $data);
         }
 
-        return response()->json(['error' => 'Invalid credentials'], 401);
+        $validationError = ValidationException::withMessages(['error' => 'Invalid credentials']);
+        return $this->coreResponse('An error occurred', $validationError);
     }
 
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
 
-        return response()->json(['message' => 'Tokens revoked']);
+        return $this->successResponse('Logged out successfully');
     }
 
     public function refresh(Request $request)
@@ -61,8 +70,11 @@ class AuthController extends Controller
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        $token = $user->createToken('authToken')->plainTextToken;
+        $data = [
+            'token' => $user->createToken('authToken')->plainTextToken,
+            'user' => $user
+        ];
 
-        return response()->json(['token' => $token]);
+        return $this->successResponse('Registered successfully', $data);
     }
 }
