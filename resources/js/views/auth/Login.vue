@@ -2,14 +2,22 @@
   <div class="container mt-5">
     <h1 class="text-center">Login</h1>
     <form @submit.prevent="onSubmit" class="mx-auto mt-4" style="max-width: 400px">
-      <div class="mb-3">
-        <label for="email" class="form-label">Email:</label>
-        <input v-model="email" type="email" id="email" required class="form-control">
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" v-model="email" required>
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+          </div>
+        </div>
       </div>
 
-      <div class="mb-3">
-        <label for="password" class="form-label">Password:</label>
-        <input v-model="password" type="password" id="password" required class="form-control">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" v-model="password" required>
+          </div>
+        </div>
       </div>
 
       <button type="submit" class="btn btn-primary mt-3 w-100" :disabled="isLoading">Login</button>

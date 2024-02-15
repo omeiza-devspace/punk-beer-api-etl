@@ -2,24 +2,31 @@
   <div class="container mt-5">
     <h1 class="text-center">Register</h1>
     <form @submit.prevent="onSubmit" class="mx-auto mt-4" style="max-width: 400px">
-      <div class="mb-3">
-        <label for="name" class="form-label">Name:</label>
-        <input v-model="name" type="text" id="name" required class="form-control">
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="text" class="form-control" id="name" v-model="name" placeholder="Enter Name" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="email" class="form-control" id="email" v-model="email" placeholder="Enter Email" required>
+          </div>
+        </div>
       </div>
 
-      <div class="mb-3">
-        <label for="email" class="form-label">Email:</label>
-        <input v-model="email" type="email" id="email" required class="form-control">
-      </div>
-
-      <div class="mb-3">
-        <label for="password" class="form-label">Password:</label>
-        <input v-model="password" type="password" id="password" required class="form-control">
-      </div>
-
-      <div class="mb-3">
-        <label for="confirmPassword" class="form-label">Confirm Password:</label>
-        <input v-model="confirmPassword" type="password" id="confirmPassword" required class="form-control">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="password" class="form-control" id="password" v-model="password" placeholder="Enter Password" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="password" class="form-control" id="password_confirmation" v-model="confirmPassword" placeholder="Confirm Password" required>
+          </div>
+        </div>
       </div>
 
       <button type="submit" class="btn btn-primary mt-3 w-100" :disabled="isLoading">Register</button>
