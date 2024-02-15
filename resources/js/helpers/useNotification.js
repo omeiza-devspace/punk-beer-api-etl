@@ -1,29 +1,49 @@
-// useNotification.js
 import { ref } from 'vue';
 
-export const useNotification = () => {
-  const showNotification = ref(false);
-  const notificationType = ref('');
-  const notificationMessage = ref('');
+const useNotification = () => {
+  const notification = ref({
+    show: false,
+    type: '',
+    message: '',
+    details: null,
+  });
 
-  const setNotification = (message, isSuccess = true) => {
+  const setNotification = (message, type = 'info', details =null) => {
     clearNotification();
-    showNotification.value = true;
-    notificationMessage.value = message;
-    notificationType.value = isSuccess ? 'success' : 'error';
+    notification.show = true;
+    notification.message = message;
+    notification.type = type;
+    notification.details = details;
+  };
+
+  const setSuccessNotification = (message, details = null) => {
+    setNotification(message, 'success', details);
+  };
+
+  const setErrorNotification = (message, details = null) => {
+    setNotification(message, 'error', details);
   };
 
   const clearNotification = () => {
-    showNotification.value = false;
-    notificationMessage.value = '';
-    notificationType.value = '';
+    notification.show = false;
+    notification.message = '';
+    notification.type = '';
+    notification.details = null;
   };
 
+  const closeNotification = () => {
+    clearNotification();
+  }
+
   return {
-    showNotification,
-    notificationType,
-    notificationMessage,
+    ...notification,
     setNotification,
+    setSuccessNotification,
+    setErrorNotification,
     clearNotification,
+    closeNotification,
   };
 };
+
+
+export { useNotification };

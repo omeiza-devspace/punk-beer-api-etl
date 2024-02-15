@@ -30,7 +30,7 @@
               <p class="text-muted">{{ beer.tagline }}</p>
               <img :src="beer.image_url" alt="Beer Image" class="w-32 h-32 object-cover rounded-md mt-2">
             </div>
-            <button @click="viewProductDetails(beer.id)" class="btn btn-primary">View Details</button>
+            <button @click="viewBeerDetails(beer.id)" class="btn btn-primary">View Details</button>
           </div>
         </li>
       </ul>
@@ -50,81 +50,97 @@
     </div>
 
     <Notification />
+    <Loading />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useBeerStore } from '@/stores/useBeerStore';
+
 import Notification from '@/components/utils/Notification.vue';
-import { useNotification } from '@/helpers/useNotification.js';
+import Loading from '@/components/utils/Loading.vue';
+
+import { useNotification } from '@/helpers/useNotification';
+import { useLoading } from '@/helpers/useLoading';
 
 const beers = ref([]);
 const searchBy = ref('name');
 const searchTerm = ref('');
 
 const beerStore = useBeerStore();
-const { setNotification } = useNotification();
+const { setSuccessNotification, setErrorNotification, clearNotification } = useNotification();
+const { startLoading, stopLoading } = useLoading()
 
-const isLoading = ref(false);
 
 onMounted(async () => {
-  isLoading.value = true;
+  
   try {
+    startLoading()
     await beerStore.fetchPaginatedBeers();
+    setSuccessNotification("Successfully fetched all records")
   } catch (error) {
-    setNotification('Failed to fetch beers', false, error);
+    setErrorNotification('Failed to fetch records', error);
   } finally {
-    isLoading.value = false;
-  }
+    stopLoading() 
+    clearNotification()
+ }
 });
 
-const viewProductDetails = async (productId) => {
-  isLoading.value = true;
+const viewBeerDetails = async (beerId) => {
   try {
-    await beerStore.searchBeerById(productId);
+    startLoading()
+    await beerStore.searchBeerById(beerId);
     // Implement logic to navigate to the beer details page
   } catch (error) {
-    setNotification('Failed to view beer details', false, error);
+    setErrorNotification('Failed to view beer details', error);
   } finally {
-    isLoading.value = false;
+    stopLoading() 
+    clearNotification()  
   }
 };
 
 const nextPage = async () => {
-  isLoading.value = true;
   try {
+    startLoading()
     await beerStore.goToPage(beerStore.currentPage + 1);
     await fetchProducts();
   } catch (error) {
-    setNotification('Failed to navigate to the next page', false, error);
+    setErrorNotification('Failed to navigate to the next page', error);
   } finally {
-    isLoading.value = false;
+    stopLoading() 
+    clearNotification()  
   }
 };
 
 const previousPage = async () => {
-  isLoading.value = true;
   try {
+    startLoading()
     await beerStore.goToPage(beerStore.currentPage - 1);
     await fetchProducts();
   } catch (error) {
-    setNotification('Failed to navigate to the previous page', false, error);
+    setErrorNotification('Failed to navigate to the previous page', error);
   } finally {
-    isLoading.value = false;
+    stopLoading() 
+    clearNotification()   
   }
 };
 
 const fetchProducts = async () => {
   try {
+    startLoading()
     await beerStore.fetchPaginatedBeers();
   } catch (error) {
-    setNotification('Failed to fetch beers', false, error);
+    setErrorNotification('Failed to fetch beers', error);
+  } finally {
+    stopLoading() 
+    clearNotification()   
   }
 };
 
-const search = async () => {
+const filterRecords = async () => {
   try {
+    startLoading()
     const response = await this.$axios.get('/api/beers/search', {
       params: {
         [searchBy.value]: searchTerm.value,
@@ -133,6 +149,9 @@ const search = async () => {
     beers.value = response.data.data;
   } catch (error) {
     console.error('Error searching beers:', error);
+  }finally {
+    stopLoading() 
+    clearNotification()   
   }
 };
 </script>

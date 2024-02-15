@@ -8,7 +8,7 @@
     <ul v-if="!beerStore.error">
       <li v-for="beer in beerStore.beers" :key="beer.id">
         {{ beer.name }}
-        <button @click="viewProductDetails(beer.id)">View Details</button>
+        <button @click="viewBeerDetails(beer.id)">View Details</button>
       </li>
     </ul>
 
@@ -34,8 +34,8 @@ const fetchProducts = async () => {
   beers.value = beerStore.beers;
 };
 
-const viewProductDetails = async (productId) => {
-  await beerStore.searchBeerById(productId);
+const viewBeerDetails = async (beerId) => {
+  await beerStore.searchBeerById(beerId);
   // Implement logic to navigate to the beer details page
 };
 

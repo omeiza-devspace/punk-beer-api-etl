@@ -1,3 +1,4 @@
+<!-- Notification.vue -->
 <template>
   <div v-if="isVisible" class="notification" :class="notificationType">
     <p>{{ message }}</p>
@@ -12,8 +13,14 @@ import { useNotification } from '@/helpers/useNotification.js';
 const { isVisible, message, notificationType, closeNotification } = useNotification();
 
 watchEffect(() => {
-  if (isVisible && notificationType === 'error') {
-    console.error('Error in Notification component:', message);
+  if (isVisible) {
+    if (notificationType === 'success') {
+      console.log('Success:', message);
+    } else if (notificationType === 'error') {
+      console.error('Error:', message);
+    } else {
+      console.log('Info:', message);
+    }
   }
 });
 </script>
@@ -39,5 +46,3 @@ watchEffect(() => {
   background-color: #2ecc71;
 }
 </style>
-
-

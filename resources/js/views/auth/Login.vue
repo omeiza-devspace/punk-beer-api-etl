@@ -24,6 +24,7 @@
     </form>
 
     <Notification />
+    <Loading />
   </div>
 </template>
 
@@ -31,28 +32,35 @@
 import { ref } from 'vue';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useRouter } from 'vue-router';
-import Notification from '@/components/utils/Notification.vue';
-import { useNotification } from '@/helpers/useNotification.js';
 
+import Notification from '@/components/utils/Notification.vue';
+import Loading from '@/components/utils/Loading.vue';
+
+
+import { useNotification } from '@/helpers/useNotification';
+import { useLoading } from '@/helpers/useLoading';
+
+const loading = useLoading();
 const authStore = useAuthStore();
 const router = useRouter();
-const { login, setNotification } = authStore;
-const { isLoading, setLoading } = useNotification();
+const { login } = authStore;
+const { setSuccessNotification, setErrorNotification, clearNotification } = useNotification();
+const { isLoading, startLoading, stopLoading } = useLoading()
 
 const email = ref('');
 const password = ref('');
 
 const onSubmit = async () => {
   try {
-    setLoading(true);
+    startLoading();
     await login({ email: email.value, password: password.value });
-    // Redirect to the dashboard upon successful login
     router.push('/dashboard');
   } catch (error) {
     // Handle login error
-    setNotification(error.message, false);
+    setErrorNotification(error.message, false);
   } finally {
-    setLoading(false);
+    clearNotification()
+    stopLoading();
   }
 };
 </script>

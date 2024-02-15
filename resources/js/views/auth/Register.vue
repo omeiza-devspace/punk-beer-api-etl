@@ -33,20 +33,27 @@
     </form>
 
     <Notification />
-  </div>
+    <Loading />
+</div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useAuthStore } from '@/stores/useAuthStore';
-import Notification from '@/components/utils/Notification.vue';
 import { useRouter } from 'vue-router';
-import { useNotification } from '@/helpers/useNotification.js';
+
+import Notification from '@/components/utils/Notification.vue';
+import Loading from '@/components/utils/Loading.vue';
+
+import { useNotification } from '@/helpers/useNotification';
+import { useLoading } from '@/helpers/useLoading';
 
 const authStore = useAuthStore();
 const router = useRouter();
-const { register, setNotification } = authStore;
-const { isLoading, setLoading } = useNotification();
+const { register } = authStore;
+
+const { setSuccessNotification, setErrorNotification, clearNotification } = useNotification();
+const { isLoading, startLoading, stopLoading } = useLoading()
 
 const name = ref('');
 const email = ref('');
@@ -55,7 +62,7 @@ const confirmPassword = ref('');
 
 const onSubmit = async () => {
   try {
-    setLoading(true);
+    startLoading();
     // Basic password confirmation check
     if (password.value !== confirmPassword.value) {
       throw new Error('Passwords do not match');
@@ -67,28 +74,27 @@ const onSubmit = async () => {
       password: password.value,
     });
 
-    // Optionally, you can redirect the user to the login page after successful registration
     router.push('/login');
   } catch (error) {
     // Handle registration error
     if (error.response) {
       // Server responded with a status code outside of the range 2xx
-      setNotification(error.response.data.message || 'Registration failed.', false, error);
+      setErrorNotification(error.response.data.message || 'Registration failed.', error);
     } else if (error.message === 'Passwords do not match') {
       // Password confirmation error
-      setNotification('Passwords do not match', false);
+      setErrorNotification('Passwords do not match', false);
     } else {
       // Other unexpected errors
-      setNotification('An unexpected error occurred. Please try again later.', false, error);
+      setErrorNotification('An unexpected error occurred. Please try again later.', error);
     }
   } finally {
-    setLoading(false);
+    clearNotification()
+    stopLoading();
   }
 };
 </script>
 
 <style scoped>
-/* Add specific styles for this component if needed */
 .form {
   margin-top: 20px;
 }

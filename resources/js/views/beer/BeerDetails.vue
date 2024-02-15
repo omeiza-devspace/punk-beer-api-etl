@@ -30,7 +30,8 @@
         <div class="mt-4">
           <p class="text-lg font-semibold">Food Pairing:</p>
           <ul class="list-unstyled">
-            <li v-for="foodItem in beerStore.food_pairing" :key="foodItem">{{ foodItem }}</li>
+            <li v-for="foodItem in beerStore.food_pairing" :key="foodItem">
+              {{ foodItem }}</li>
           </ul>
         </div>
       </div>
@@ -39,39 +40,45 @@
 
     </div>
     <Notification />
+    <Loading />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useBeerStore } from '@/stores/useBeerStore';
-import Notification from '@/components/utils/Notification.vue';
-import { useNotification } from '@/helpers/useNotification.js';
 import { useRoute } from 'vue-router';
 
+import Notification from '@/components/utils/Notification.vue';
+import Loading from '@/components/utils/Loading.vue';
+
+import { useNotification } from '@/helpers/useNotification';
+import { useLoading } from '@/helpers/useLoading';
+
 const beerStore = useBeerStore();
-const { setNotification } = useNotification();
+const { setSuccessNotification, setErrorNotification, clearNotification } = useNotification();
+const { isLoading, startLoading, stopLoading } = useLoading()
 const route = useRoute();
-const isLoading = ref(false);
 
 onMounted(async () => {
-  isLoading.value = true;
   
   try {
+    startLoading()
     if (!beerStore.selectedBeer) {
         if(route.params.id){
           const id = route.params.id;
 
          await beerStore.fetchBeerDetails(id);
-
+           setSuccessNotification(" Record fetched Successfully")
         }else{
-          setNotification('Failed to fetch beer details', false, null);
+          setErrorNotification('Failed to fetch beer details', null);
         }
     }
   } catch (error) {
-    setNotification('Failed to fetch beer details', false, error);
-  } finally {
-    isLoading.value = false;
+    setErrorNotification('Failed to fetch beer details',  error);
+  }  finally {
+    stopLoading() 
+    clearNotification()   
   }
 });
 
