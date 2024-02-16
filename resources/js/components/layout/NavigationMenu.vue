@@ -1,8 +1,9 @@
-<!-- src/components/NavigationMenu.vue -->
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <router-link class="navbar-brand" :to="{ path: '/' }">{{ appName }}</router-link>
+
+      <!-- Move the button before the brand for mobile-first design -->
       <button
         class="navbar-toggler"
         type="button"
@@ -14,12 +15,14 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarNav">
         <RouteList :routes="filteredRoutes"/>
       </div>
     </div>
   </nav>
 </template>
+
 
 
 
